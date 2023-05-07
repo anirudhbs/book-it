@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+const TEAMS = ["FaZe", "G2", "Liquid"];
 
 async function getIndividualMatchDetails(page, currentMatch) {
   return currentMatch.evaluate((el) => {
@@ -20,7 +21,7 @@ async function getIndividualMatchDetails(page, currentMatch) {
   }, await page.$(".matchTeamName"));
 }
 
-async function main() {
+async function getMatchDetails() {
   const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
   const matchSelector = ".upcomingMatch";
@@ -28,15 +29,23 @@ async function main() {
   await page.goto("https://www.hltv.org/matches?predefinedFilter=lan_only");
   const nodes = await page.$$(matchSelector);
 
-  const matchDetails = await Promise.all(
+  return Promise.all(
     nodes.map((currentMatch) => getIndividualMatchDetails(page, currentMatch))
   );
+}
 
-  const filteredMatches = matchDetails.filter(
-    (match) => match.team1 && match.team2
+function filterMatches(matches) {
+  return matches.filter(
+    ({ team1, team2 }) => TEAMS.includes(team1) || TEAMS.includes(team2)
   );
+}
+
+async function main() {
+  const matchDetails = await getMatchDetails();
+  const filteredMatches = filterMatches(matchDetails);
 
   console.log(filteredMatches);
+  return;
 }
 
 main();
