@@ -10,8 +10,18 @@ async function scrapePage() {
   const upcomingMatches = await page.$$(matchSelector);
   //  ideal shape: {id: "", url: "", team1: "", team2: "", time: "", event: ""}
 
-  const g = await upcomingMatches[0].evaluate((el) => {
+  const matchDetails = upcomingMatches.slice(0, 3).map(async (currentMatch) => {
+    return await getMatchDetails(page, currentMatch);
+  });
+  console.log(matchDetails);
+}
+
+async function getMatchDetails(page, currentMatch) {
+  return currentMatch.evaluate(async (el) => {
     const currentMatchData = {};
+    if (!el.querySelector(".team1 > .matchTeamName")) {
+      return {};
+    }
     const url = el.querySelector("a.match").getAttribute("href");
     const id = url.split("/")[2];
     const team1 = el.querySelector(".team1 > .matchTeamName").textContent;
@@ -24,12 +34,8 @@ async function scrapePage() {
     currentMatchData.team2 = team2;
     currentMatchData.time = time;
 
-    return currentMatchData;
+    return await currentMatchData;
   }, await page.$(".matchTeamName"));
-  // const p = await matches[0].("textContent");
-  console.log("g", g);
-
-  console.log("total", upcomingMatches.length);
 }
 
 scrapePage();
