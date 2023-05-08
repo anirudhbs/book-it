@@ -7,7 +7,7 @@
     "start": "node src/index.js"
   },
   "keywords": [],
-  "author": "anirudhbs96@gmail.com, varunghegde500@gmail.com",
+  "author": "anirudhbs96@gmail.com",
   "license": "ISC",
   "dependencies": {
     "puppeteer": "^20.1.1"
