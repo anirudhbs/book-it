@@ -1,5 +1,6 @@
 const { getMatchDetails } = require("./scrape");
 const { convertToICalEvents } = require("./ical");
+const { pushToS3 } = require("./s3");
 const TEAMS = ["FaZe", "G2", "Liquid"];
 
 const MOCK_EVENTS = [
@@ -34,7 +35,7 @@ async function main() {
   const filteredMatches = filterMatches(matchDetails);
   const newEvents = convertToICalEvents(filteredMatches);
 
-  console.log(newEvents);
+  await pushToS3(newEvents);
   return;
 }
 
