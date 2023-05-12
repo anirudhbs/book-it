@@ -10,8 +10,6 @@
   "author": "anirudhbs96@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/local-auth": "^2.1.1",
-    "googleapis": "^118.0.0",
     "puppeteer": "^20.1.1"
   },
   "devDependencies": {
