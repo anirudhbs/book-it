@@ -2,11 +2,11 @@ const ics = require("ics");
 
 function createiCalFile(matches) {
   const match = matches[0];
-  const { team1, team2, event, url } = match;
+  const { team1, team2, event, url, time, matchType } = match;
 
   const event1 = {
-    start: [2023, 5, 14, 21, 0],
-    duration: { hours: 1 },
+    start: ics.convertTimestampToArray(parseInt(time)),
+    duration: getMatchDuration(matchType),
     title: `${team1} vs ${team2}`,
     description: `At the ${event}`,
     location: `https://www.hltv.org${url}`,
@@ -19,6 +19,10 @@ function createiCalFile(matches) {
     }
     console.log(value);
   });
+}
+
+function getMatchDuration(matchType) {
+  return { hours: matchType === "bo1" ? 1 : 2 };
 }
 
 createiCalFile([
