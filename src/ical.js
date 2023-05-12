@@ -3,8 +3,7 @@ const ics = require("ics");
 function convertToICalEvents(matches) {
   const events = createEventsFromMatches(matches);
   const { value } = ics.createEvents(events);
-  const a = getEventsOnly(value);
-  console.log("xx", a);
+  return getEventsOnly(value);
 }
 
 function getEventsOnly(value) {
@@ -15,15 +14,28 @@ function getMatchDuration(matchType) {
   return { hours: matchType === "bo1" ? 1 : 2 };
 }
 
+function getTitle(team1, team2) {
+  return `${team1} vs ${team2}`;
+}
+
+function getDescription(event) {
+  return `At the ${event}`;
+}
+
+function getUrl(url) {
+  return `https://www.hltv.org${url}`;
+}
+
 function createEventsFromMatches(matches) {
   return matches.map((match) => {
     const { team1, team2, event, url, time, matchType } = match;
+
     return {
       start: ics.convertTimestampToArray(parseFloat(time)),
       duration: getMatchDuration(matchType),
-      title: `${team1} vs ${team2}`,
-      description: `At the ${event}`,
-      location: `https://www.hltv.org${url}`,
+      title: getTitle(team1, team2),
+      description: getDescription(event),
+      location: getUrl(url),
     };
   });
 }
