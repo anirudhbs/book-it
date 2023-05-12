@@ -1,7 +1,7 @@
 const ics = require("ics");
 
-function convertToICalEvents(matches) {
-  const events = createEventsFromMatches(matches);
+function generateICalEvents(matches) {
+  const events = createEventObjectArray(matches);
   const { value } = ics.createEvents(events);
   return getEventsOnly(value);
 }
@@ -26,7 +26,7 @@ function getUrl(url) {
   return `https://www.hltv.org${url}`;
 }
 
-function createEventsFromMatches(matches) {
+function createEventObjectArray(matches) {
   return matches.map((match) => {
     const { team1, team2, event, url, time, matchType } = match;
 
@@ -40,4 +40,4 @@ function createEventsFromMatches(matches) {
   });
 }
 
-module.exports = { convertToICalEvents };
+module.exports = { generateICalEvents };

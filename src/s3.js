@@ -7,7 +7,7 @@ const { s3ClientSettings } = require("./config");
 
 const client = new S3Client(s3ClientSettings);
 
-async function getFile() {
+async function getFileContents() {
   const command = new GetObjectCommand({
     Bucket: "flusha",
     Key: "cs.ics",
@@ -23,9 +23,11 @@ async function getFile() {
   }
 }
 
-async function pushToS3(newEvents) {
-  const existing = await getFile();
-  await updateFile(addNewEvents(existing, newEvents));
+async function updateICSFile(newEvents) {
+  const existing = await getFileContents();
+  const newContent = addNewEvents(existing, newEvents);
+  await updateFile(newContent);
+  return;
 }
 
 function addNewEvents(existing, newEvents) {
@@ -46,7 +48,6 @@ async function updateFile(content) {
   });
 
   try {
-    // console.log(content);
     const response = await client.send(command);
     console.log(response);
   } catch (err) {
@@ -54,6 +55,4 @@ async function updateFile(content) {
   }
 }
 
-getFile();
-
-module.exports = { pushToS3 };
+module.exports = { updateICSFile };

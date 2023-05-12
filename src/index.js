@@ -1,6 +1,6 @@
-const { getMatchDetails } = require("./scrape");
-const { convertToICalEvents } = require("./ical");
-const { pushToS3 } = require("./s3");
+const { getMatches } = require("./scrape");
+const { generateICalEvents } = require("./ical");
+const { updateICSFile } = require("./s3");
 const { filterMatches } = require("./filter");
 
 // Event:
@@ -15,11 +15,11 @@ const { filterMatches } = require("./filter");
 // }
 
 async function main() {
-  const matchDetails = await getMatchDetails();
-  const filteredMatches = filterMatches(matchDetails);
-  const newEvents = convertToICalEvents(filteredMatches);
+  const allMatches = await getMatches();
+  const filteredMatches = filterMatches(allMatches);
+  const newEvents = generateICalEvents(filteredMatches);
 
-  await pushToS3(newEvents);
+  await updateICSFile(newEvents);
   return;
 }
 

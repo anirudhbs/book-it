@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-async function getMatchDetails() {
+async function getMatches() {
   const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
@@ -32,4 +32,4 @@ async function getIndividualMatchDetails(page, currentMatch) {
   }, await page.$(".matchTeamName"));
 }
 
-module.exports = { getMatchDetails };
+module.exports = { getMatches };
