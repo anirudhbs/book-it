@@ -1,38 +1,31 @@
 const ics = require("ics");
 
-function createiCalFile(matches) {
-  const match = matches[0];
-  const { team1, team2, event, url, time, matchType } = match;
+function convertToICalEvents(matches) {
+  const events = createEventsFromMatches(matches);
+  const { value } = ics.createEvents(events);
+  const a = getEventsOnly(value);
+  console.log("xx", a);
+}
 
-  const event1 = {
-    start: ics.convertTimestampToArray(parseInt(time)),
-    duration: getMatchDuration(matchType),
-    title: `${team1} vs ${team2}`,
-    description: `At the ${event}`,
-    location: `https://www.hltv.org${url}`,
-  };
-
-  ics.createEvent(event1, (error, value) => {
-    if (error) {
-      console.log("err", error);
-      return;
-    }
-    console.log(value);
-  });
+function getEventsOnly(value) {
+  return value.split("\n").slice(6).slice(0, -2).join("\n");
 }
 
 function getMatchDuration(matchType) {
   return { hours: matchType === "bo1" ? 1 : 2 };
 }
 
-createiCalFile([
-  {
-    id: "2363866",
-    url: "/matches/2363866/vitality-vs-g2-blasttv-paris-major-2023",
-    matchType: "bo1",
-    team1: "Vitality",
-    team2: "G2",
-    time: "1683986400000",
-    event: "BLAST.tv Paris Major 2023",
-  },
-]);
+function createEventsFromMatches(matches) {
+  return matches.map((match) => {
+    const { team1, team2, event, url, time, matchType } = match;
+    return {
+      start: ics.convertTimestampToArray(parseFloat(time)),
+      duration: getMatchDuration(matchType),
+      title: `${team1} vs ${team2}`,
+      description: `At the ${event}`,
+      location: `https://www.hltv.org${url}`,
+    };
+  });
+}
+
+module.exports = { convertToICalEvents };
