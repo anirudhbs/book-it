@@ -10,6 +10,7 @@
   "author": "anirudhbs96@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "ics": "^3.1.0",
     "puppeteer": "^20.1.1"
   },
   "devDependencies": {
