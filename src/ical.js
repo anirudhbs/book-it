@@ -2,7 +2,10 @@ const ics = require("ics");
 
 function generateICalEvents(matches) {
   const events = createEventObjectArray(matches);
-  const { value } = ics.createEvents(events);
+  const { value, error } = ics.createEvents(events);
+  if (error) {
+    throw error;
+  }
   return getEventsOnly(value);
 }
 

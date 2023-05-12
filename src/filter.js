@@ -1,7 +1,27 @@
+const { getExistingMatchIds, addMatchesToS3 } = require("./s3");
+
 const TEAMS = ["FaZe", "G2", "Liquid", "ENCE", "fnatic"];
 
-function filterMatches(matches) {
-  return filterMyTeams(matches);
+async function filterMatches(matches) {
+  const matchesWithTwoTeams = getMatchesWithTwoTeams(matches);
+
+  const matchesToAdd = await filterOutExistingMatches(matchesWithTwoTeams);
+
+  setTimeout(() => {
+    addMatchesToS3(matchesToAdd);
+  }, 5000);
+
+  return await filterMyTeams(matchesToAdd);
+}
+
+async function filterOutExistingMatches(matches) {
+  const existingMatches = await getExistingMatchIds();
+
+  return matches.filter((match) => !existingMatches.includes(match.id));
+}
+
+function getMatchesWithTwoTeams(matches) {
+  return matches.filter((match) => match.team1 && match.team2);
 }
 
 function filterMyTeams(matches) {

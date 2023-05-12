@@ -2,6 +2,7 @@ const {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
+  ListObjectsCommand,
 } = require("@aws-sdk/client-s3");
 const { s3ClientSettings } = require("./config");
 
@@ -48,11 +49,49 @@ async function updateFile(content) {
   });
 
   try {
+    await client.send(command);
+    console.log("done");
+    return;
+  } catch (err) {
+    console.error("Error updating file", err);
+  }
+}
+
+async function getExistingMatchIds() {
+  const command = new ListObjectsCommand({
+    Bucket: "flusha",
+  });
+
+  try {
     const response = await client.send(command);
-    console.log(response);
+    return response.Contents.map(({ Key }) => Key).filter((key) =>
+      key.includes(".match")
+    );
   } catch (err) {
     console.error(err);
   }
 }
 
-module.exports = { updateICSFile };
+function addMatchesToS3(ids) {
+  ids.forEach(async (match) => {
+    const command = new PutObjectCommand({
+      Bucket: "flusha",
+      Key: `${match.id}.match`,
+      Body: "t",
+      Expires: new Date("2023-05-18"),
+    });
+
+    try {
+      await client.send(command);
+      return;
+    } catch (err) {
+      console.error("Error adding match", err);
+    }
+  });
+}
+
+module.exports = {
+  updateICSFile,
+  addMatchesToS3,
+  getExistingMatchIds,
+};

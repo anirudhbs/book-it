@@ -16,7 +16,7 @@ const { filterMatches } = require("./filter");
 
 async function main() {
   const allMatches = await getMatches();
-  const filteredMatches = filterMatches(allMatches);
+  const filteredMatches = await filterMatches(allMatches);
   const newEvents = generateICalEvents(filteredMatches);
 
   await updateICSFile(newEvents);
