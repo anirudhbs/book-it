@@ -42,6 +42,7 @@ async function updateFile(content) {
     Bucket: "flusha",
     Key: "cs.ics",
     Body: content,
+    ACL: "public-read",
   });
 
   try {
