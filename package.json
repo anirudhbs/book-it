@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "rm -rf ./build && tsc && node ./build/index"
   },
   "keywords": [],
   "author": "anirudhbs96@gmail.com",
@@ -15,6 +15,7 @@
     "puppeteer": "^20.1.1"
   },
   "devDependencies": {
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
   }
 }
